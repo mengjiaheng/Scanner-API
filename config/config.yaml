@@ -1,8 +1,11 @@
-target: http://139.196.232.238/
+scantarget:
+  target_url: http://139.196.232.238/
 
 
 server:
   port: 8080
   addr: 106.14.56.170
 
-
+blacklist:
+  filename: jquery.js,flexible.js,data-set.js,monitor.js,umi.js,honeypot.js,.min.js,angular.js
+  domain: api.map.baidu.com,alipayobjects.com

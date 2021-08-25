@@ -6,9 +6,11 @@
 package main
 
 import (
-	"scanner-api/ceshi"
+	"github.com/mengjiaheng/scanapi/config"
+	"github.com/mengjiaheng/scanapi/service"
 )
 
 func main() {
-	ceshi.Ceshi("https://www.bountyteam.com/service")
+	cf := config.Default()
+	service.RequestUrl(cf.TargetUrl)
 }
