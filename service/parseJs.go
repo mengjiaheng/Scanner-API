@@ -7,17 +7,17 @@ package service
 
 import (
 	"fmt"
-	"net/http"
 	"net/url"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/mengjiaheng/scanapi/config"
+	"github.com/mengjiaheng/scanapi/utils"
 )
 
 func RequestUrl(url string) error {
 
-	response, err := http.Get(url)
+	req := utils.NewRequest()
+	response, err := req.Request("get", url, nil)
 	if err != nil {
 		return err
 	}
@@ -50,6 +50,7 @@ func RequestUrl(url string) error {
 			}
 		}
 	})
+	fmt.Println(path)
 	return nil
 }
 
@@ -61,21 +62,21 @@ func GetFileName(url string) string {
 }
 
 // 过滤黑名单js和域名
-func BlackListDomain(path string) error {
-	res, err := url.Parse(path)
-	if err != nil {
-		return err
-	}
-	jsRealPathDomain := strings.ToLower(res.Host)
-	jsRealPathFilename := strings.ToLower(GetFileName(path))
+// func BlackListDomain(path string) error {
+// 	res, err := url.Parse(path)
+// 	if err != nil {
+// 		return err
+// 	}
+// 	jsRealPathDomain := strings.ToLower(res.Host)
+// 	jsRealPathFilename := strings.ToLower(GetFileName(path))
 
-	// 获取黑名单域名
-	conf := config.Default()
-	for _, v := range strings.Split(conf.Blacklist.Domain, ",") {
+// 	// 获取黑名单域名
+// 	conf := config.Default()
+// 	for _, v := range strings.Split(conf.Blacklist.Domain, ",") {
 
-	}
-	return nil
-}
+// 	}
+// 	return nil
+// }
 
 // 生成JS绝对路径
 func DealJs(str, js_path string) string {
