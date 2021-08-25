@@ -6,7 +6,7 @@
 package utils
 
 import (
-	"bytes"
+	"io"
 	"net/http"
 )
 
@@ -25,10 +25,9 @@ func (r *Request) AddHeader(key, value string) {
 	r.header[key] = value
 }
 
-func (r *Request) Request(method, url string, body []byte) (*http.Response, error) {
+func (r *Request) Request(method, url string, body io.Reader) (*http.Response, error) {
 
-	Body := bytes.NewBuffer(body)
-	request, err := http.NewRequest(method, url, Body)
+	request, err := http.NewRequest(method, url, body)
 	if err != nil {
 		return nil, err
 	}

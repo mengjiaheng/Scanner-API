@@ -8,5 +8,5 @@ package main
 import "github.com/mengjiaheng/scanapi/service"
 
 func main() {
-	service.RequestUrl("https://www.bountyteam.com/service")
+	service.RequestUrl("http://139.196.232.238/")
 }
