@@ -25,10 +25,10 @@ func (r *Request) AddHeader(key, value string) {
 	r.header[key] = value
 }
 
-func (r *Request) Request(method, url string, data []byte) (*http.Response, error) {
+func (r *Request) Request(method, url string, body []byte) (*http.Response, error) {
 
-	body := bytes.NewBuffer(data)
-	request, err := http.NewRequest(method, url, body)
+	Body := bytes.NewBuffer(body)
+	request, err := http.NewRequest(method, url, Body)
 	if err != nil {
 		return nil, err
 	}
