@@ -1,0 +1,9 @@
+scantarget:
+  target_url: http://139.196.232.238/
+
+
+server:
+  port: 8080
+  addr: 106.14.56.170
+
+
