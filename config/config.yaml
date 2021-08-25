@@ -1,4 +1,5 @@
-target_url: http://139.196.232.238/
+scantarget:
+  target_url: http://139.196.232.238/
 
 
 server:
