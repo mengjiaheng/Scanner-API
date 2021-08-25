@@ -8,16 +8,18 @@ package service
 import (
 	"fmt"
 	"net/url"
+	"os"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/mengjiaheng/scanapi/config"
-	"github.com/mengjiaheng/scanapi/utils"
+	"github.com/mengjiaheng/scanapi/utils/file"
+	"github.com/mengjiaheng/scanapi/utils/request"
 )
 
 func RequestUrl(url string) error {
 
-	req := utils.NewRequest()
+	req := request.NewRequest()
 	response, err := req.Request("GET", url, nil)
 	if err != nil {
 		return err
@@ -30,9 +32,23 @@ func RequestUrl(url string) error {
 	path := make(map[string]int)
 	doc.Find("script,link").Each(func(i int, s *goquery.Selection) {
 		if s.Text() != "" {
+			if err := file.IsNotExistMkDir("./jsFile"); err != nil {
+				fmt.Println(err.Error())
+				return
+			}
 			// 将标签里面的js代码读取出来放到指定文件
-			// os.Mkdir("")
-			fmt.Printf("%d: %s\n", i, s.Text())
+			f, err := file.Open("./jsFile/ss", os.O_APPEND|os.O_CREATE|os.O_WRONLY, os.ModeAppend)
+			if err != nil {
+				fmt.Println("文件创建错误", err.Error())
+				return
+			}
+			_, err = f.Write([]byte(s.Text()))
+			if err != nil {
+				fmt.Println(err.Error())
+				return
+			}
+			defer f.Close()
+			// fmt.Printf("%d: %s\n", i, s.Text())
 		} else {
 			value1, _ := s.Attr("href")
 			value2, _ := s.Attr("src")
@@ -50,14 +66,19 @@ func RequestUrl(url string) error {
 			}
 			if value2 != "" {
 				if strings.HasSuffix(value2, ".js") {
-					fmt.Printf("%d: %s\n", i, value2)
 					// 拼接URL
-					path[DealJs(url, value2)]++
+					b, err := BlackListDomain(DealJs(url, value2))
+					if err != nil {
+						return
+					}
+					if !b {
+						path[DealJs(url, value2)]++
+					}
 				}
 			}
 		}
 	})
-	fmt.Println(path)
+	downloadJs(path)
 	return nil
 }
 

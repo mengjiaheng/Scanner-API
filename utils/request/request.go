@@ -3,7 +3,7 @@
  * @Date: 2021-08-25 16:21:59
  * @Desc: file content
  */
-package utils
+package request
 
 import (
 	"io"
@@ -31,6 +31,7 @@ func (r *Request) Request(method, url string, body io.Reader) (*http.Response, e
 	if err != nil {
 		return nil, err
 	}
+
 	for k, v := range r.header {
 		request.Header.Add(k, v)
 	}
