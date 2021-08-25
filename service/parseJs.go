@@ -11,13 +11,13 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/mengjiaheng/scanapi/utils"
+	"github.com/mengjiaheng/scanapi/utils/request"
 )
 
 func RequestUrl(url string) error {
 
-	req := utils.NewRequest()
-	response, err := req.Request("get", url, nil)
+	req := request.NewRequest()
+	response, err := req.Request("GET", url, nil)
 	if err != nil {
 		return err
 	}
@@ -43,14 +43,14 @@ func RequestUrl(url string) error {
 			}
 			if value2 != "" {
 				if strings.HasSuffix(value2, ".js") {
-					fmt.Printf("%d: %s\n", i, value2)
 					// 拼接URL
 					path[DealJs(url, value2)]++
 				}
 			}
 		}
 	})
-	fmt.Println(path)
+	downloadJs(path)
+	// fmt.Println(path)
 	return nil
 }
 
