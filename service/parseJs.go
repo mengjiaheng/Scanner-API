@@ -11,13 +11,14 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/mengjiaheng/scanapi/config"
 	"github.com/mengjiaheng/scanapi/utils"
 )
 
 func RequestUrl(url string) error {
 
 	req := utils.NewRequest()
-	response, err := req.Request("get", url, nil)
+	response, err := req.Request("GET", url, nil)
 	if err != nil {
 		return err
 	}
@@ -26,7 +27,7 @@ func RequestUrl(url string) error {
 	if err != nil {
 		return err
 	}
-	path := make(map[string]int, 0)
+	path := make(map[string]int)
 	doc.Find("script,link").Each(func(i int, s *goquery.Selection) {
 		if s.Text() != "" {
 			// 将标签里面的js代码读取出来放到指定文件
@@ -38,7 +39,13 @@ func RequestUrl(url string) error {
 			if value1 != "" {
 				if strings.HasSuffix(value1, ".js") {
 					// 拼接URL
-					path[DealJs(url, value1)]++
+					b, err := BlackListDomain(DealJs(url, value1))
+					if err != nil {
+						return
+					}
+					if !b {
+						path[DealJs(url, value1)]++
+					}
 				}
 			}
 			if value2 != "" {
@@ -54,7 +61,7 @@ func RequestUrl(url string) error {
 	return nil
 }
 
-//
+// 获取js文件名
 func GetFileName(url string) string {
 	array := strings.Split(url, "/")
 	filename := array[len(array)-1]
@@ -62,21 +69,41 @@ func GetFileName(url string) string {
 }
 
 // 过滤黑名单js和域名
-// func BlackListDomain(path string) error {
-// 	res, err := url.Parse(path)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	jsRealPathDomain := strings.ToLower(res.Host)
-// 	jsRealPathFilename := strings.ToLower(GetFileName(path))
+func BlackListDomain(path string) (bool, error) {
+	res, err := url.Parse(path)
+	if err != nil {
+		return false, err
+	}
+	jsRealPathDomain := strings.ToLower(res.Host)
+	jsRealPathFilename := strings.ToLower(GetFileName(path))
 
-// 	// 获取黑名单域名
-// 	conf := config.Default()
-// 	for _, v := range strings.Split(conf.Blacklist.Domain, ",") {
-
-// 	}
-// 	return nil
-// }
+	// 获取黑名单域名
+	conf := config.Default()
+	var flag int
+	for _, v := range strings.Split(conf.Blacklist.Domain, ",") {
+		if strings.Count(jsRealPathDomain, v) > 0 { // 是否存在黑名单域名
+			flag = 1
+			break
+		} else {
+			flag = 0
+		}
+	}
+	if flag > 0 {
+		return true, nil
+	}
+	for _, v := range strings.Split(conf.Blacklist.Filename, ",") {
+		if strings.Count(jsRealPathFilename, v) > 0 {
+			flag = 1
+			break
+		} else {
+			flag = 0
+		}
+	}
+	if flag > 0 {
+		return true, nil
+	}
+	return false, nil
+}
 
 // 生成JS绝对路径
 func DealJs(str, js_path string) string {
