@@ -3,7 +3,7 @@ scantarget:
 
 
 server:
-  port: 8080
-  addr: 106.14.56.170
+  ip: {ASA_FEELER_SERVER_IP}
+  port: {ASA_FEELER_SERVER_PORT}
 
 

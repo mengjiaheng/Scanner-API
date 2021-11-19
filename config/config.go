@@ -18,7 +18,7 @@ type ScanTarget struct {
 
 type Server struct {
 	Port string `yaml:"port"`
-	Addr string `yaml:"addr"`
+	IP   string `yaml:"IP"`
 }
 
 //go:embed config.yaml

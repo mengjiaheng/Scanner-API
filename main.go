@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/mengjiaheng/scanapi/config"
 )
 
 func main() {
@@ -12,5 +13,6 @@ func main() {
 	r.POST("/upload", func(c *gin.Context) {
 		c.JSON(200, "ok")
 	})
-	r.Run(":8080")
+	cf := config.Default()
+	r.Run(cf.IP+":", cf.Port)
 }
