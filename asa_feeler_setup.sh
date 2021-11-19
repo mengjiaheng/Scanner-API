@@ -1,7 +1,7 @@
 # !/usr/bin/bash
 
 mkdir /opt/asa_feeler
-mv ./Scanner-API /opt/asa_feeler
+mv ../Scanner-API /opt/asa_feeler
 cd /opt/asa_feeler/Scanner-API/
 
 read -p "请输入服务启动IP：" ASA_FEELER_SERVER_IP
