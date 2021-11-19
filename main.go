@@ -14,5 +14,5 @@ func main() {
 		c.JSON(200, "ok")
 	})
 	cf := config.Default()
-	r.Run(cf.IP+":", cf.Port)
+	r.Run(cf.IP + ":" + cf.Port)
 }
